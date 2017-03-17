@@ -55,7 +55,7 @@ class StudentChangePoint():
         self.mcp_max_ll_mat, self.m0_ll_mat = None, None  # LogLik values for model w/ cp and model w/o cp
         self.mcp_min_bic_mat, self.m0_bic_mat = None, None  # BIC values for model w/ cp and model w/o cp
         self.alpha_i_mat = None  # alpha_i's. There are three columns.
-        self.better_w_cp_sidxs, self.better_wo_cp_idxs = None, None # student indices w/ detected change, w/o detected change
+        self.better_w_cp_sidxs, self.better_wo_cp_sidxs = None, None # student indices w/ detected change, w/o detected change
 
 
     def load_data(self, data_fname, binary=False):
@@ -233,7 +233,7 @@ class StudentChangePoint():
         self.m0_ll_mat = no_segment_ll_mat
         self.alpha_i_mat = alpha_i_mat
         self.better_w_cp_sidxs = np.where(self.m0_bic_mat > self.mcp_min_bic_mat)[0]  # better with segments
-        self.better_wo_cp_idxs = np.where(self.m0_bic_mat <= self.mcp_min_bic_mat)[0]
+        self.better_wo_cp_sidxs = np.where(self.m0_bic_mat <= self.mcp_min_bic_mat)[0]
         print('  ---> took ' + str((datetime.now() - st_time).seconds) + ' seconds.')
 
 
@@ -315,12 +315,40 @@ class StudentChangePoint():
         plt.close()
 
 
+    def get_inc_dec_noch_sidxs(self):
+        """
+        Returns
+        -------
+        list[list[int]]
+            [increased, decreased, nochange]
+            List of students who increased, decreased, and didn't change their activities
+        """
+        diffed = np.diff(self.alpha_i_mat[:,:2]).flatten()
+        rate_increased_sidx = np.where(diffed > 0)[0]
+        rate_decreased_sidx = np.where(diffed < 0)[0]
+        rate_nochange_sidx = np.where(diffed == 0)[0]
+
+        increased_valid_sidx = list(set(rate_increased_sidx) & set(self.better_w_cp_sidxs))
+        decreased_valid_sidx = list(set(rate_decreased_sidx) & set(self.better_w_cp_sidxs))
+        increased_invalid_sidx = list(set(rate_increased_sidx) & set(self.better_wo_cp_sidxs))
+        decreased_invalid_sidx = list(set(rate_decreased_sidx) & set(self.better_wo_cp_sidxs))
+        # Those whose BIC with segment is larger than BIC w/o segments
+        nochange_idx = list(set(increased_invalid_sidx) | set(decreased_invalid_sidx)| set(rate_nochange_sidx))
+
+        student_idxs_in_groups = [increased_valid_sidx, decreased_valid_sidx, nochange_idx]
+        return student_idxs_in_groups
+
+
+
 if __name__ == "__main__":
 
     # Bernoulli model
     cp_bin = StudentChangePoint(data_fname='./test_data.csv', binary=True, result_dir='result_bin')
     cp_bin.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
+    inc_bin, dec_bin, noch_bin = cp_bin.get_inc_dec_noch_sidxs()
 
     # Poisson model
     cp_cnts = StudentChangePoint(data_fname='./test_data.csv', binary=False, result_dir='result_cnts')
     cp_cnts.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
+    inc_cnts, dec_cnts, noch_cnts= cp_bin.get_inc_dec_noch_sidxs()
+
