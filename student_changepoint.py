@@ -8,7 +8,6 @@ import os
 import matplotlib.pyplot as plt
 
 import statsmodels.api as sm
-from statsmodels.tools.sm_exceptions import PerfectSeparationError
 from glm_gd import GLM, GLMResult
 from utils import check_path_and_make_dirs, expit, logit, \
     loglik_poisson, loglik_bernoulli
@@ -232,7 +231,7 @@ class StudentChangepoint():
         self.m0_bic_mat = no_segment_bic_mat
         self.m0_ll_mat = no_segment_ll_mat
         self.alpha_i_mat = alpha_i_mat
-        self.better_w_cp_sidxs = np.where(self.m0_bic_mat > self.mcp_min_bic_mat)[0]  # better with segments
+        self.better_w_cp_sidxs = np.where(self.m0_bic_mat > self.mcp_min_bic_mat)[0]
         self.better_wo_cp_sidxs = np.where(self.m0_bic_mat <= self.mcp_min_bic_mat)[0]
         print('  ---> took ' + str((datetime.now() - st_time).seconds) + ' seconds.')
 
@@ -330,12 +329,9 @@ class StudentChangepoint():
 
         increased_valid_sidx = list(set(rate_increased_sidx) & set(self.better_w_cp_sidxs))
         decreased_valid_sidx = list(set(rate_decreased_sidx) & set(self.better_w_cp_sidxs))
-        increased_invalid_sidx = list(set(rate_increased_sidx) & set(self.better_wo_cp_sidxs))
-        decreased_invalid_sidx = list(set(rate_decreased_sidx) & set(self.better_wo_cp_sidxs))
-        # Those whose BIC with segment is larger than BIC w/o segments
-        nochange_idx = list(set(increased_invalid_sidx) | set(decreased_invalid_sidx)| set(rate_nochange_sidx))
+        nochange_sidx = list(set(self.better_wo_cp_sidxs) | set(rate_nochange_sidx))
 
-        student_idxs_in_groups = [increased_valid_sidx, decreased_valid_sidx, nochange_idx]
+        student_idxs_in_groups = [increased_valid_sidx, decreased_valid_sidx, nochange_sidx]
         return student_idxs_in_groups
 
 
