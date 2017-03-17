@@ -27,7 +27,8 @@ class StudentChangePoint():
         result_dir : str
             File path to the results (output)
         padding : int
-            Number of days that you want to skip when searching the changepoint tau_i's
+            Number of days that you want to skip at both ends (start and end)
+            when searching the changepoint tau_i's
         binary : bool
             True if you want to use the Bernoulli model using binarized data
         """
