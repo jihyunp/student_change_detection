@@ -14,7 +14,7 @@ from utils import check_path_and_make_dirs, expit, logit, \
     loglik_poisson, loglik_bernoulli
 
 
-class StudentChangePoint():
+class StudentChangepoint():
 
     def __init__(self, data_fname = './data.csv', result_dir='./result', padding=10, binary=False):
         """
@@ -343,12 +343,12 @@ class StudentChangePoint():
 if __name__ == "__main__":
 
     # Bernoulli model
-    cp_bin = StudentChangePoint(data_fname='./test_data.csv', binary=True, result_dir='result_bin')
+    cp_bin = StudentChangepoint(data_fname='./test_data.csv', binary=True, result_dir='result_bin')
     cp_bin.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
     inc_bin, dec_bin, noch_bin = cp_bin.get_inc_dec_noch_sidxs()
 
     # Poisson model
-    cp_cnts = StudentChangePoint(data_fname='./test_data.csv', binary=False, result_dir='result_cnts')
+    cp_cnts = StudentChangepoint(data_fname='./test_data.csv', binary=False, result_dir='result_cnts')
     cp_cnts.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
     inc_cnts, dec_cnts, noch_cnts= cp_bin.get_inc_dec_noch_sidxs()
 
