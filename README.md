@@ -5,8 +5,8 @@ Jihyun Park (`jihyunp@ics.uci.edu`)<br>
 March 2017
 
 ## Required Packages
-This code is written in `python2.7`, 
-and python packages `numpy`, `matplotlib`, `statsmodels` are needed.
+Written in `python2.7`. <br>
+Python packages `numpy`, `matplotlib`, `statsmodels` are needed.
 
 
 ## Code
