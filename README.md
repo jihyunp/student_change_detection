@@ -1,5 +1,5 @@
 # StudentChangePoint
-This code was released for [the paper at LAK 17](http://dl.acm.org/citation.cfm?id=3027430)
+This code was released for [our paper "Detecting Changes of Student Behavior from Clickstream Data" at LAK 17](http://dl.acm.org/citation.cfm?id=3027430)
 
 ## student_changepoint.py
 This is the main code for student change detection.
