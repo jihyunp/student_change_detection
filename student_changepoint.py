@@ -43,7 +43,6 @@ class StudentChangePoint():
         self.n_students, self.n_days = 0, 0
         self.idxs = None
         self.glm_mat = None
-
         self.load_data(data_fname, binary)
         if np.max(self.rawdata) == 1:
             self.binary = True
@@ -51,6 +50,7 @@ class StudentChangePoint():
         self.glm_mat = self.get_matrix_for_glm_mixed()
 
         # Things that are used in changedetection
+        # These will have values after running function 'naive_changepoint_detection()'
         self.detected_cp_arr = None  # detected changepoint locations
         self.mcp_max_ll_mat, self.m0_ll_mat = None, None  # LogLik values for model w/ cp and model w/o cp
         self.mcp_min_bic_mat, self.m0_bic_mat = None, None  # BIC values for model w/ cp and model w/o cp
@@ -88,10 +88,9 @@ class StudentChangePoint():
              Second column  : number of clicks per day (X_it)
              Third column : mu_t (population mean rate)
         """
-        mat = self.rawdata.copy()
-
         # This will give you the same result as we actually estimate the intercept
         #  (in fact it might be better since we can add a small number for padding)
+        mat = self.rawdata
         population_rate = mat.sum(axis=0) / float(self.n_students)
         population_rate += 0.000001
 
@@ -117,6 +116,7 @@ class StudentChangePoint():
                 result = glm_mat[sidx_st:sidx_end, :]
                 return result
 
+
     def run_glm(self, glm_data, binary):
         if binary:
             model = GLM(glm_data[:, 1], np.ones((glm_data.shape[0], 1)), offset=glm_data[:, 2],
@@ -134,16 +134,17 @@ class StudentChangePoint():
                 res = model.fit()
         return res
 
-    def naive_change_point_detection(self, plot=True, debug=False):
+
+    def naive_changepoint_detection(self, plot=True, debug=False):
         """
 
         Parameters
         ----------
-        plot
-        debug
-
-        Returns
-        -------
+        plot  : bool
+            Plot individual student's result while running it.
+            The plots will be generated in 'result_dir/student_plots'
+        debug : bool
+            Print student index while running
 
         """
         st_time = datetime.now()
@@ -241,7 +242,7 @@ class StudentChangePoint():
                                     xlim=None, ylim=None, ylim2=None,
                                     legend_loc='upper left', legend_loc2=None, subtract_mean=False):
         """
-        Plotting individual student's activity. Used inside of the function 'naive_change_point_detection()'
+        Plotting individual student's activity. Used inside of the function 'naive_changepoint_detection()'
         """
         X_NT = self.rawdata
         X1t = X_NT[sidx, :]
@@ -318,8 +319,8 @@ if __name__ == "__main__":
 
     # Bernoulli model
     cp_bin = StudentChangePoint(data_fname='./test_data.csv', binary=True, result_dir='result_bin')
-    cp_bin.naive_change_point_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
+    cp_bin.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
 
     # Poisson model
     cp_cnts = StudentChangePoint(data_fname='./test_data.csv', binary=False, result_dir='result_cnts')
-    cp_cnts.naive_change_point_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
+    cp_cnts.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
