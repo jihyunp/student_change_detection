@@ -11,4 +11,4 @@ Generalized linear regression (that only works for our model) using a simple gra
 It does not seem to be working well with Poisson model. The code is only used for the Bernoulli model.
 
 ## utils.py
-Some useful functions that are used.
+Some useful functions that are being used.
