@@ -338,13 +338,14 @@ class StudentChangepoint():
 
 if __name__ == "__main__":
 
-    # Bernoulli model
+    # Bernoulli model (Binary)
     cp_bin = StudentChangepoint(data_fname='./test_data.csv', binary=True, result_dir='result_bin')
     cp_bin.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
     inc_bin, dec_bin, noch_bin = cp_bin.get_inc_dec_noch_sidxs()
 
-    # Poisson model
+    # Poisson model (Counts)
     cp_cnts = StudentChangepoint(data_fname='./test_data.csv', binary=False, result_dir='result_cnts')
     cp_cnts.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
-    inc_cnts, dec_cnts, noch_cnts= cp_bin.get_inc_dec_noch_sidxs()
+    inc_cnts, dec_cnts, noch_cnts= cp_cnts.get_inc_dec_noch_sidxs()
+    print cp_cnts.detected_cp_arr # print the locations of detected changepoints
 
