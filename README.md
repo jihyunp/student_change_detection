@@ -1,4 +1,4 @@
-# StudentChangepoint
+# student_changepoint_detection
 This code was released for [our paper "Detecting Changes of Student Behavior from Clickstream Data" at LAK 17](http://dl.acm.org/citation.cfm?id=3027430)
 
 Jihyun Park (`jihyunp@ics.uci.edu`)<br>
