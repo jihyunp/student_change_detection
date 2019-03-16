@@ -313,7 +313,6 @@ class StudentChangepoint():
         plt.savefig(filename)
         plt.close()
 
-
     def get_inc_dec_noch_sidxs(self):
         """
         Returns
@@ -333,6 +332,14 @@ class StudentChangepoint():
 
         student_idxs_in_groups = [increased_valid_sidx, decreased_valid_sidx, nochange_sidx]
         return student_idxs_in_groups
+
+    def rank_students_by_cp(self):
+        groups_of_sidxs = self.get_inc_dec_noch_sidxs()
+        groups_of_sidxs_ranked = []
+        for sidxs in groups_of_sidxs:
+            sidxs_sorted = np.array(sidxs)[np.argsort(self.detected_cp_arr[sidxs])]
+            groups_of_sidxs_ranked.append(sidxs_sorted)
+        return groups_of_sidxs_ranked
 
 
 
