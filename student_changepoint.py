@@ -56,7 +56,6 @@ class StudentChangepoint():
         self.alpha_i_mat = None  # alpha_i's. There are three columns.
         self.better_w_cp_sidxs, self.better_wo_cp_sidxs = None, None # student indices w/ detected change, w/o detected change
 
-
     def load_data(self, data_fname, binary=False):
         print '\nLoading the data from '+ data_fname
         reader = csv.reader(open(data_fname, 'r'), delimiter=',')
@@ -70,7 +69,6 @@ class StudentChangepoint():
         self.idxs = range(self.n_students)
         if binary:
             self.rawdata[np.where(data)] = 1.0
-
 
     def get_matrix_for_glm_mixed(self):
         """
@@ -106,7 +104,6 @@ class StudentChangepoint():
         mat_for_glm= np.concatenate((id_days_X, mu_t_NT), axis=1).tolist()
         return np.array(mat_for_glm)
 
-
     def get_one_student_data(self, glm_mat, sidx):
         if glm_mat.shape[0] == (self.n_days * self.n_students):
             if (0 <= sidx < self.n_students):
@@ -114,7 +111,6 @@ class StudentChangepoint():
                 sidx_end = self.n_days * (sidx + 1)
                 result = glm_mat[sidx_st:sidx_end, :]
                 return result
-
 
     def run_glm(self, glm_data, binary):
         if binary:
@@ -132,7 +128,6 @@ class StudentChangepoint():
                                 family=sm.families.Poisson(link=sm.genmod.families.links.log))
                 res = model.fit()
         return res
-
 
     def naive_changepoint_detection(self, plot=True, debug=False):
         """
@@ -334,13 +329,20 @@ class StudentChangepoint():
         return student_idxs_in_groups
 
     def rank_students_by_cp(self):
+        """
+        Returns
+        -------
+        list[list[int]]
+            [increased, decreased, nochange]
+            List of students who increased, decreased, and didn't change their activities,
+            sorted by the changepoint locations within each group.
+        """
         groups_of_sidxs = self.get_inc_dec_noch_sidxs()
         groups_of_sidxs_ranked = []
         for sidxs in groups_of_sidxs:
             sidxs_sorted = np.array(sidxs)[np.argsort(self.detected_cp_arr[sidxs])]
             groups_of_sidxs_ranked.append(sidxs_sorted)
         return groups_of_sidxs_ranked
-
 
 
 if __name__ == "__main__":
@@ -355,4 +357,3 @@ if __name__ == "__main__":
     cp_cnts.naive_changepoint_detection(plot=True, debug=False) # Disable 'plot' (plot=False) for faster run.
     inc_cnts, dec_cnts, noch_cnts= cp_cnts.get_inc_dec_noch_sidxs()
     print cp_cnts.detected_cp_arr # print the locations of detected changepoints
-
