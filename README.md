@@ -24,8 +24,8 @@ Take a look the main function at the bottom for an example run (or you can just 
 `better_wo_cp_sidxs` : Student indices without detected change<br>
 
 ### glm_gd.py
-Generalized linear regression (that only works for our model) using a simple gradient descent method.
-It does not seem to be working well with Poisson model. The code is only used for the Bernoulli model.
+Generalized linear regression using a simple gradient descent method (that only works for our model).
+This code is used for the Bernoulli model only. (`statsmodels` package is used for the Poisson model.)
 
 ### utils.py
 Some useful functions that are being used.
